@@ -15,19 +15,17 @@ fireBaseConnection();
 const app = express();
 const server = http.createServer(app); // Sử dụng server chung cho Express và Socket.IO
 
-const port = process.env.PORT || 3000; 
+const port = process.env.PORT || 5004; 
 
 mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log("Connected to the database"))
     .catch((err) => console.error(err));
 
 
-const ioServer = http.createServer(); // Tạo một HTTP server riêng cho Socket.io
-const io = new Server(ioServer, {
-  cors: {
-    origin: "*", 
-},
+const io = new Server(server, {
+  cors: { origin: "*" },
 });
+
 
 // Xử lý các sự kiện `Socket.io`
 io.on('connection', (socket) => {
