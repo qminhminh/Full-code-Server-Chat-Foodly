@@ -1,12 +1,7 @@
 const express = require('express');
 const { Server } = require('socket.io');
 const http = require('http');
-const bodyParser = require('body-parser');
-const app = express();
-const morgan = require('morgan');
 const dotenv = require('dotenv');
-const compression = require('compression');
-const cors = require('cors');
 const { fireBaseConnection } = require('./utils/fbConnect');
 const mongoose = require('mongoose');
 const User = require('./models/User');
@@ -19,29 +14,13 @@ dotenv.config()
 fireBaseConnection();
 
 
-
+const port = process.env.PORT || 3000; 
 
 mongoose.connect(process.env.MONGO_URL)
     .then(() => console.log("connected to the db")).catch((err) => { console.log(err) });
 
 
-
-
-app.use(compression({
-    level: 6,
-    threshold: 0
-}))
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(morgan('combined'));
-
-
-const ip =  "192.168.137.1";
-
-
-const ioPort = 5005;
-const ioServer = http.createServer(app); // Tạo một HTTP server riêng cho Socket.io
+const ioServer = http.createServer(); // Tạo một HTTP server riêng cho Socket.io
 const io = new Server(ioServer, {
   cors: {
     origin: "*", 
@@ -488,7 +467,7 @@ socket.on('mark_as_read_client_res', async (data) => {
 });
 
 // Khởi động Socket.io trên cổng 5000
-ioServer.listen(ioPort, () => {
-    console.log(`Socket.io server listening on port ${ioPort}`);
+ioServer.listen(port, () => {
+    console.log(`Socket.io server listening on port ${port}`);
 });
 
