@@ -52,6 +52,7 @@ io.on('connection', (socket) => {
       const { customerId, restaurantId, message } = data;
       try{
         const user = await User.findById(customerId, { fcm: 1 });
+        console.log(user);
         if (user) {
           if (user.fcm || user.fcm !== null || user.fcm !== '') {
             sendNotification(user.fcm,`${message}`, data, `Restaurant sent you a message`);
