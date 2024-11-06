@@ -1,3 +1,4 @@
+
 const express = require('express');
 const { Server } = require('socket.io');
 const http = require('http');
@@ -8,24 +9,23 @@ const User = require('./models/User');
 const Message = require('./models/Message'); 
 const sendNotification = require('./utils/sendNotification');
 
-
-dotenv.config()
-
+dotenv.config();
 fireBaseConnection();
 
+const app = express();
+const server = http.createServer(app); // Sử dụng server chung cho Express và Socket.IO
 
 const port = process.env.PORT || 3000; 
 
 mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log("connected to the db")).catch((err) => { console.log(err) });
+    .then(() => console.log("Connected to the database"))
+    .catch((err) => console.error(err));
 
 
 const ioServer = http.createServer(); // Tạo một HTTP server riêng cho Socket.io
 const io = new Server(ioServer, {
   cors: {
     origin: "*", 
-    methods: ["GET", "POST","PUT","DELETE"],
-    allowedHeaders: ["Content-Type"],
 },
 });
 
@@ -467,7 +467,7 @@ socket.on('mark_as_read_client_res', async (data) => {
 });
 
 // Khởi động Socket.io trên cổng 5000
-ioServer.listen(port, () => {
-    console.log(`Socket.io server listening on port ${port}`);
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
